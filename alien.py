@@ -9,8 +9,9 @@ class Alien(Sprite):
 
         self.image = pygame.image.load('Assets/images/enemy_4.png')
         self.rect = self.image.get_rect()
-        self.rect.x = self.rect.width
+        self.rect.x = self.rect.width + 100 
         self.rect.y = self.rect.height
+
 
         self.x = float(self.rect.x)
 

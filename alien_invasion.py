@@ -29,12 +29,14 @@ class AlienInvasion:
         self.bg_image = pygame.image.load("Assets/images/Starbasesnow.png").convert()
 
     def run_game(self):
+        print("Game is running...")  # Debug line
         while True:
             self._check_events()
             self.ship.update()
             self._update_bullets()
             self._update_aliens()
             self._update_screen()
+
 
     def _check_events(self):
         for event in pygame.event.get():
@@ -48,24 +50,18 @@ class AlienInvasion:
                 self._check_keyup_events(event)
 
     def _check_keydown_events(self, event):
-        if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = True
-        elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = True
-        elif event.key == pygame.K_SPACE:
-            self._fire_bullet()
-        elif event.key == pygame.K_q:
-            sys.exit()
-        elif event.key == pygame.K_1:
-            self.arsenal.switch_weapon("laser")
-        elif event.key == pygame.K_2:
-            self.arsenal.switch_weapon("beam")
+        if event.key == pygame.K_UP:
+           self.ship.moving_up = True
+        elif event.key == pygame.K_DOWN:
+           self.ship.moving_down = True
+
 
     def _check_keyup_events(self, event):
-        if event.key == pygame.K_RIGHT:
-            self.ship.moving_right = False
-        elif event.key == pygame.K_LEFT:
-            self.ship.moving_left = False
+       if event.key == pygame.K_UP:
+          self.ship.moving_up = False
+       elif event.key == pygame.K_DOWN:
+           self.ship.moving_down = False
+
 
     def _fire_bullet(self):
         weapon = self.arsenal.get_current_weapon_data()
@@ -111,10 +107,13 @@ class AlienInvasion:
     def _create_alien(self, alien_number, row_number):
         alien = Alien(self)
         alien_width, alien_height = alien.rect.size
-        alien.x = alien_width + 2 * alien_width * alien_number
+
+        alien.x = 50 + 2 * alien_width * alien_number
         alien.rect.x = alien.x
-        alien.rect.y = alien.rect.height + 2 * alien.rect.height * row_number
+        alien.rect.y = 50 + 2 * alien_height * row_number
+
         self.aliens.add(alien)
+
 
     def _update_aliens(self):
         self._check_fleet_edges()
@@ -122,8 +121,9 @@ class AlienInvasion:
 
         # Check for collisions with ship or aliens hitting bottom
         for alien in self.aliens.sprites():
-            if alien.rect.bottom >= self.screen.get_rect().bottom:
-                self._end_game()
+            if alien.rect.colliderect(self.ship.rect) or alien.rect.right >= self.screen.get_rect().right:
+              self._end_game()
+
 
             if pygame.sprite.spritecollideany(self.ship, self.aliens):
                 self._end_game()
